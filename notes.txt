@@ -1,0 +1,13 @@
+
+# these should be constants or something
+
+max map size        40x40 ->  1600 tiles
+max no. objects     ~ 200 
+
+
+# these should be enums or something
+TileObjectTypes = 
+    0 PLAYER 
+    1 CHEST
+    2 DOOR 
+    3 ENEMY - Skeleton
