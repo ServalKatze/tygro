@@ -2,7 +2,7 @@
 # these should be constants or something
 
 max map size        40x40 ->  1600 tiles
-max no. objects     ~ 200 
+max no. objects     200 
 
 
 # these should be enums or something
