@@ -3,7 +3,7 @@ import femto.Game;
 import femto.State;
 import femto.input.Button;
 import femto.palette.Pico8;
-import femto.font.TIC80;
+import femto.font.Tight;
 
 class MapScreen extends State {
     HiRes16Color screen;
@@ -21,7 +21,7 @@ class MapScreen extends State {
     }
 
     public void init() {
-        screen = new HiRes16Color(Pico8.palette(), TIC80.font());
+        screen = new HiRes16Color(Pico8.palette(), Tight.font());
         GameData data = GameData.getInstance();
         
         tileMap = data.tileMap;
@@ -48,7 +48,21 @@ class MapScreen extends State {
 
         return false;
     }
-
+    
+    public boolean applyHealthPotion() {
+        int min = player.hitPoints.maxValue / 4;
+        int max = player.hitPoints.maxValue / 3;
+        player.hitPoints.increase((byte) Math.random(min, max));
+        return true;
+    }
+    
+    public boolean applyManaPotion() {
+        int min = player.manaPoints.maxValue / 4;
+        int max = player.manaPoints.maxValue / 3;
+        player.manaPoints.increase((byte) Math.random(min, max));
+        return true;
+    }
+    
     public void updateLogic() {
         if (player.moveDir > 0) {
             byte xCoord = player.tileObj.xCoord;
@@ -74,19 +88,19 @@ class MapScreen extends State {
             TileObject obj = tileMap.getObject(yCoord, xCoord);
             if (obj != null) {
                 switch (obj.type) {
-                    // CHEST
                     case 1:
+                        // CHEST
                         // TODO: generate and add loot from chest to player inventory
                         tileMap.remObject(obj);
                         statusMsg = Messages.loot;
                         break;
-                        // DOOR 
                     case 2:
+                        // DOOR 
                         tileMap.remObject(obj);
                         statusMsg = Messages.door;
                         break;
+                    case 3: 
                         // ENEMY
-                    case 3:
                         if (attack(player, (Enemy) obj.data, true)) {
                             statusMsg = Messages.enemyDead;
                             tileMap.remObject(obj);
@@ -99,6 +113,18 @@ class MapScreen extends State {
                         // you're ded. 
                         //tileMap.remObject(player.tileObj);
                         //}
+                        break;
+                    case 4: 
+                        // HEALTH POTION
+                        tileMap.remObject(obj);
+                        statusMsg = Messages.potion;
+                        applyHealthPotion();
+                        break;
+                    case 5: 
+                        // MANA POTION
+                        tileMap.remObject(obj);
+                        statusMsg = Messages.potion;
+                        applyManaPotion();
                         break;
                     default:
                         statusMsg = Messages.blocked;
@@ -162,9 +188,11 @@ class MapScreen extends State {
     public void updateEvents() {
         byte newMoveDir = 0;
 
-        if (Button.B.justPressed())
+        if (Button.B.justPressed()) {
+            // maybe later...
             //Game.changeState(new Main());
-            Game.changeState(new InventoryScreen());
+            //Game.changeState(new InventoryScreen());
+        }
         else if (player.isDead())
             statusMsg = Messages.youDied;
         else if (Button.Up.isPressed())

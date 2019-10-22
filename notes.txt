@@ -11,3 +11,6 @@ TileObjectTypes =
     1 CHEST
     2 DOOR 
     3 ENEMY - Skeleton
+    
+    4 HEALTH POTION
+    5 MANA POTION

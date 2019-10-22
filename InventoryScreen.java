@@ -1,27 +1,54 @@
+/*
 import femto.mode.HiRes16Color;
 import femto.Game;
 import femto.State;
 import femto.input.Button;
 import femto.palette.Pico8;
-import femto.font.TIC80;
 
 class InventoryScreen extends State {
     HiRes16Color screen;
-    String statusMsg;
     byte curMoveDir;
     byte moveTimer;
     GameData data;
+    String statLines;
+    String eqLines;
+    String selLines;
+    boolean updateStats;
 
     public void preinit() {
-        statusMsg = "";
         curMoveDir = 0;
         moveTimer = 0;
+        updateStats = true;
     }
 
     public void init() {
-        screen = new HiRes16Color(Pico8.palette(), TIC80.font());
-        statusMsg = "Inventory";
+        screen = new HiRes16Color(Pico8.palette(), femto.font.Tight.font());
+
         data = GameData.getInstance();
+        
+        statLines =   "    999999/999999       999999/999999          99999\n"
+                    + "    9999   9999         9999   9999            99999\n"
+                    + "    9999999/9999999       99   99          999999999";
+        
+        eqLines = ""
+            + "    99999     99999\n"
+            + "    9999      9999\n"
+            + "    9999      9999\n"
+            + "    99999     99999\n"
+            + "    9999999   Legendary";
+
+        selLines = ""
+            + "                         "
+            + "    99999     99999\n"
+            + "                         "
+            + "    9999      9999\n"
+            + "                         "
+            + "    9999      9999\n" 
+            + "                         "
+            + "    99999     99999\n"
+            + "                         "
+            + "    9999999   Legendary";
+            
     }
     
     public void updateEvents() {
@@ -30,7 +57,10 @@ class InventoryScreen extends State {
     }
     
     public void updateLogic() {
-        
+        if(updateStats) {
+            updateStats = false;
+            statLines = data.player.getStats();
+        }
     }
     
     public void update() {
@@ -42,34 +72,61 @@ class InventoryScreen extends State {
 
         // draw stuff
         screen.clear(0);
+        
+        // equpiment slots
+        int x = 13;
+        int y = 5;
+        for(byte i=0; i<3; i = i + 1) {
+            screen.drawRect(x, y, 15, 15, 5, true);
+            y = y + 17;
+        }
+        
+        x = 30;
+        y = 5;
+        for(byte i=0; i<3; i = i + 1) {
+            screen.drawRect(x, y, 15, 15, 5, true);
+            y += 17;
+        }
+        
+        // inventory slots
+        y = 4;
+        for(byte row = 0; row < 3; row = row + 1) {
+            x = 64;
+            for(byte col = 0; col < 5; col = col + 1) {
+                screen.drawRect(x, y, 15, 15, 1, true);
+                x += 33;
+            }
+            y += 18;
+        }
 
+        
+        // player stats
+        screen.drawRect(9, 60, 204, 39, 1, true);
+        drawText(12, 63, Messages.invCurStats, 3);
+        drawText(0, 72, statLines, 3);
+        
+        // equipped item stats 
+        screen.drawRect(9, 102, 102, 58, 1, true);
+        drawText(12, 105, Messages.invEqItem, 3);
+        drawText(0, 115, eqLines, 3);
+        
+        // selected item stats 
+        screen.drawRect(111, 102, 103, 58, 1, true);
+        drawText(114, 105, Messages.invSelItem, 3);
+        drawText(0, 115, selLines, 3);
+        
         // status line
-        screen.setTextColor(3);
-        screen.setTextPosition(2, 168);
-        screen.print(statusMsg);
-
-        // player exp
-        // FIXME: probably no need for floats here, but eh... 
-        float width = 219.0 * data.player.experience.getRatio();
-        screen.drawRect(0, 161, 219, 2, 1, true);
-        screen.drawHLine(1, 162, (int) width, 3);
-
-        // player hp
-        screen.drawRect(0, 163, 109, 3, 11, true);
-        width = 109.0 * data.player.hitPoints.getRatio();
-        screen.drawHLine(1, 164, (int) width, 9);
-        screen.drawHLine(1, 165, (int) width, 9);
-
-        // player mp/stamina
-        screen.drawRect(110, 163, 109, 3, 13, true);
-        width = 109.0 * data.player.manaPoints.getRatio();
-        screen.drawHLine(111, 164, (int) width, 12);
-        screen.drawHLine(111, 165, (int) width, 12);
+        drawText(2, 168, Messages.invHint, 3);
 
         screen.setTextPosition(0, 0);
         screen.print(java.lang.Runtime.getRuntime().freeMemory());
-        //screen.print(screen.fps();
-
         screen.flush();
     }
+    
+    private void drawText(int x, int y, String text, byte color) {
+        screen.setTextColor(color);
+        screen.setTextPosition(x, y);
+        screen.print(text);
+    }
 }
+*/

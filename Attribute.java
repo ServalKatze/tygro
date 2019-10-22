@@ -25,4 +25,23 @@ class Attribute {
         if (maxValue == 0) return 0.0;
         return 1.0 * curValue / maxValue;
     }
+    
+    /*
+    public String getStatLine(byte valWidth) {
+        return getPaddedValue(true, true, valWidth) + "/" + getPaddedValue(false, false, valWidth);
+    }
+    
+    public String getPaddedValue(boolean doPadLeft, boolean isCurValue, byte valWidth) {
+        String ret = "" + (isCurValue ? (int) curValue : (int) maxValue);
+        
+        for(int i=ret.length(); i<valWidth; i++) {
+            if(doPadLeft)
+                ret = " " + ret;
+            else 
+                ret = ret + " ";
+        }
+        
+        return ret; 
+    }
+    */
 }

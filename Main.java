@@ -3,22 +3,21 @@ import femto.Game;
 import femto.State;
 import femto.input.Button;
 import femto.palette.Pico8;
-import femto.font.TIC80;
+import femto.font.Tight;
 
 
 class Main extends State {
     HiRes16Color screen;
 
     // start the game with an initial state
-    // and TIC80 as the menu's font
     public static void main(String[] args) {
-        Game.run(TIC80.font(), new Main());
+        Game.run(Tight.font(), new Main());
     }
 
     // Avoid allocation in a State's constructor.
     // Allocate on init instead.
     void init() {
-        screen = new HiRes16Color(Pico8.palette(), TIC80.font());
+        screen = new HiRes16Color(Pico8.palette(), Tight.font());
     }
 
     // Might help in certain situations
@@ -36,7 +35,7 @@ class Main extends State {
         }
 
         screen.setTextColor(5);
-        screen.setTextPosition(85, 55);
+        screen.setTextPosition(100, 55);
         screen.print(Messages.title);
 
         screen.setTextColor(3);

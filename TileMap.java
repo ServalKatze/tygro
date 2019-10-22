@@ -7,17 +7,18 @@ class TileMap {
     byte height;
     int mapSize;
 
-    ImgWall imgWall = new ImgWall();
-    ImgGround imgGround = new ImgGround();
-    ImgGround2 imgGround2 = new ImgGround2();
-    ImgTyger imgPlayer = new ImgTyger();
-    ImgChest imgChest = new ImgChest();
-    ImgDoor imgDoor = new ImgDoor();
-    ImgEnemy imgEnemy = new ImgEnemy();
+    private static final ImgWall imgWall = new ImgWall();
+    private static final ImgGround imgGround = new ImgGround();
+    private static final ImgGround2 imgGround2 = new ImgGround2();
+    private static final ImgTyger imgPlayer = new ImgTyger();
+    private static final ImgChest imgChest = new ImgChest();
+    private static final ImgDoor imgDoor = new ImgDoor();
+    private static final ImgEnemy imgEnemy = new ImgEnemy();
+    private static final ImgHealthPotion imgHpPot = new ImgHealthPotion();
+    private static final ImgManaPotion imgMpPot = new ImgManaPotion();
 
     boolean[] terrainData;
     TileObject firstObj;
-
     public TileMap(byte width, byte height) {
         this.width = width;
         this.height = height;
@@ -156,6 +157,12 @@ class TileMap {
                         break;
                     case 3:
                         imgEnemy.draw(screen, x, y);
+                        break;
+                    case 4:
+                        imgHpPot.draw(screen, x, y);
+                        break;
+                    case 5: 
+                        imgMpPot.draw(screen, x, y);
                         break;
                     default:
                         break;

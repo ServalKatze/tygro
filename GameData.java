@@ -60,8 +60,14 @@ public class GameData {
 
         // add enemy - skeleton
         tileMap.addEnemy(1, 6, 6);
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 2; i++) {
             tileMap.addEnemy(1, 7 + i, 6);
         }
+        
+        // add item - health potion
+        for(int i = 0; i < 3; i++) {
+            tileMap.addObject(new TileObject(4, 2 + i, 7));
+        }
+        
     }
 }
