@@ -32,10 +32,25 @@
         byte newValue = experience.curValue + addVal;
         if (newValue >= experience.maxValue) {
             // levelup!
-            level++;
+            level = level + 1;
+            
+            // increase attributes!
+            hitPoints.maxValue = hitPoints.maxValue + 10;
+            manaPoints.maxValue = manaPoints.maxValue+ 5;
+            
+            // heal!
+            hitPoints.curValue = hitPoints.maxValue;
+            manaPoints.curValue = hitPoints.maxValue;
+            
+            // new exp requirements
+            experience.curValue = newValue - experience.maxValue;
+            experience.maxValue = level * 15;
+            if(experience.curValue > experience.maxValue) 
+                experience.curValue = experience.maxValue - 1;
+            
             return true;
-        }
-
+        } 
+        
         experience.increase(addVal);
         return false;
     }

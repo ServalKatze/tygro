@@ -81,6 +81,10 @@ class MapScreen extends State {
                         if (attack(data.player, (Enemy) obj.data, true)) {
                             data.statusMsg = Messages.enemyDead;
                             data.tileMap.remObject(obj);
+                            
+                            if(data.player.addExperience(obj.data.level*10)) {
+                                data.statusMsg = "Levelup! You are now level " + (int) data.player.level + "!";
+                            }
                             // loot, ep
                         } else {
                             data.statusMsg = Messages.enemy;
