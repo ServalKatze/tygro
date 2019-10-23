@@ -35,7 +35,7 @@ class Main extends State {
         }
 
         screen.setTextColor(5);
-        screen.setTextPosition(100, 55);
+        screen.setTextPosition(95, 55);
         screen.print(Messages.title);
 
         screen.setTextColor(3);

@@ -7,27 +7,18 @@ import femto.font.Tight;
 
 class MapScreen extends State {
     HiRes16Color screen;
-    TileMap tileMap;
-    Camera camera;
-    String statusMsg;
-    Player player;
     byte curMoveDir;
     byte moveTimer;
+    GameData data;
 
     public void preinit() {
-        statusMsg = "";
         curMoveDir = 0;
         moveTimer = 0;
     }
 
     public void init() {
         screen = new HiRes16Color(Pico8.palette(), Tight.font());
-        GameData data = GameData.getInstance();
-        
-        tileMap = data.tileMap;
-        camera = data.camera;
-        statusMsg = data.statusMsg;
-        player = data.player;
+        data = GameData.getInstance();
     }
 
     /// @return true if attacked entity is dead
@@ -49,26 +40,12 @@ class MapScreen extends State {
         return false;
     }
     
-    public boolean applyHealthPotion() {
-        int min = player.hitPoints.maxValue / 4;
-        int max = player.hitPoints.maxValue / 3;
-        player.hitPoints.increase((byte) Math.random(min, max));
-        return true;
-    }
-    
-    public boolean applyManaPotion() {
-        int min = player.manaPoints.maxValue / 4;
-        int max = player.manaPoints.maxValue / 3;
-        player.manaPoints.increase((byte) Math.random(min, max));
-        return true;
-    }
-    
     public void updateLogic() {
-        if (player.moveDir > 0) {
-            byte xCoord = player.tileObj.xCoord;
-            byte yCoord = player.tileObj.yCoord;
+        if (data.player.moveDir > 0) {
+            byte xCoord = data.player.tileObj.xCoord;
+            byte yCoord = data.player.tileObj.yCoord;
 
-            switch (player.moveDir) {
+            switch (data.player.moveDir) {
                 case 1:
                     yCoord--;
                     break;
@@ -85,70 +62,65 @@ class MapScreen extends State {
                     break;
             }
 
-            TileObject obj = tileMap.getObject(yCoord, xCoord);
+            TileObject obj = data.tileMap.getObject(yCoord, xCoord);
             if (obj != null) {
                 switch (obj.type) {
                     case 1:
                         // CHEST
                         // TODO: generate and add loot from chest to player inventory
-                        tileMap.remObject(obj);
-                        statusMsg = Messages.loot;
+                        data.tileMap.remObject(obj);
+                        data.statusMsg = Messages.loot;
                         break;
                     case 2:
                         // DOOR 
-                        tileMap.remObject(obj);
-                        statusMsg = Messages.door;
+                        data.tileMap.remObject(obj);
+                        data.statusMsg = Messages.door;
                         break;
                     case 3: 
                         // ENEMY
-                        if (attack(player, (Enemy) obj.data, true)) {
-                            statusMsg = Messages.enemyDead;
-                            tileMap.remObject(obj);
+                        if (attack(data.player, (Enemy) obj.data, true)) {
+                            data.statusMsg = Messages.enemyDead;
+                            data.tileMap.remObject(obj);
                             // loot, ep
                         } else {
-                            statusMsg = Messages.enemy;
+                            data.statusMsg = Messages.enemy;
                         }
-                        // yes that should be done further down.. just testing, k?
-                        //if(attack(player, (Enemy) obj.data, false)) {
-                        // you're ded. 
-                        //tileMap.remObject(player.tileObj);
-                        //}
                         break;
                     case 4: 
                         // HEALTH POTION
-                        tileMap.remObject(obj);
-                        statusMsg = Messages.potion;
-                        applyHealthPotion();
+                        data.tileMap.remObject(obj);
+                        data.player.applyHealthPotion();
+                        data.statusMsg = Messages.potion;
                         break;
                     case 5: 
                         // MANA POTION
-                        tileMap.remObject(obj);
-                        statusMsg = Messages.potion;
-                        applyManaPotion();
+                        data.tileMap.remObject(obj);
+                        data.player.applyManaPotion();
+                        data.statusMsg = Messages.potion;
                         break;
                     default:
-                        statusMsg = Messages.blocked;
+                        data.statusMsg = Messages.blocked;
                         break;
                 }
 
-            } else if (tileMap.isBlocking(yCoord, xCoord)) {
-                statusMsg = Messages.blocked;
+            } else if (data.tileMap.isBlocking(yCoord, xCoord)) {
+                data.statusMsg = Messages.blocked;
             } else {
-                player.tileObj.move(player.moveDir);
+                data.player.tileObj.move(data.player.moveDir);
             }
 
-            player.stop();
+            data.player.stop();
 
             // player moved - update enemies
             // foreach visible enemy
             // if next to player, then attack
             // otherwise move a non-blocking tile closer to player 
 
-            obj = tileMap.firstObj;
+            obj = data.tileMap.firstObj;
             while (obj != null) {
-                if (obj.isEnemy() && obj.isOnScreen(camera)) {
-                    byte xDiff = obj.xCoord - player.tileObj.xCoord;
-                    byte yDiff = obj.yCoord - player.tileObj.yCoord;
+                if (obj.isEnemy() && obj.isOnScreen(data.camera)) {
+                    byte xDiff = obj.xCoord - data.player.tileObj.xCoord;
+                    byte yDiff = obj.yCoord - data.player.tileObj.yCoord;
                     byte moveDir = 0;
                     byte newX = obj.xCoord + (xDiff > 0 ? -1 : 1);
                     byte newY = obj.yCoord + (yDiff > 0 ? -1 : 1);
@@ -156,21 +128,21 @@ class MapScreen extends State {
                     // TODO: xDiff=0 and yDiff = 1 -> next to player ==> attack
                     if (xDiff == 0 && (yDiff == 1 || yDiff == -1) ||
                         yDiff == 0 && (xDiff == 1 || xDiff == -1)) {
-                        if (attack(player, (Enemy) obj.data, false)) {
+                        if (attack(data.player, (Enemy) obj.data, false)) {
                             // you're ded. 
-                            tileMap.remObject(player.tileObj);
+                            data.tileMap.remObject(data.player.tileObj);
                         }
-                    } else if (xDiff != 0 && !tileMap.isBlocking(obj.yCoord, newX)) {
+                    } else if (xDiff != 0 && !data.tileMap.isBlocking(obj.yCoord, newX)) {
                         moveDir = xDiff > 0 ? 3 : 4;
-                    } else if (yDiff != 0 && !tileMap.isBlocking(newY, obj.xCoord)) {
+                    } else if (yDiff != 0 && !data.tileMap.isBlocking(newY, obj.xCoord)) {
                         moveDir = yDiff > 0 ? 1 : 2;
                     } else if (moveDir == 0) {
                         newX = obj.xCoord + (xDiff < 0 ? -1 : 1);
                         newY = obj.yCoord + (yDiff < 0 ? -1 : 1);
 
-                        if (!tileMap.isBlocking(obj.yCoord, newX)) {
+                        if (!data.tileMap.isBlocking(obj.yCoord, newX)) {
                             moveDir = xDiff < 0 ? 3 : 4;
-                        } else if (!tileMap.isBlocking(newY, obj.xCoord)) {
+                        } else if (!data.tileMap.isBlocking(newY, obj.xCoord)) {
                             moveDir = yDiff < 0 ? 1 : 2;
                         }
                     }
@@ -193,8 +165,8 @@ class MapScreen extends State {
             //Game.changeState(new Main());
             //Game.changeState(new InventoryScreen());
         }
-        else if (player.isDead())
-            statusMsg = Messages.youDied;
+        else if (data.player.isDead())
+            data.statusMsg = Messages.youDied;
         else if (Button.Up.isPressed())
             newMoveDir = 1;
         else if (Button.Down.isPressed())
@@ -214,13 +186,13 @@ class MapScreen extends State {
         if (moveTimer >= 15) {
             moveTimer = 0;
             if (curMoveDir == 1)
-                player.moveUp();
+                data.player.moveUp();
             else if (curMoveDir == 2)
-                player.moveDown();
+                data.player.moveDown();
             else if (curMoveDir == 3)
-                player.moveLeft();
+                data.player.moveLeft();
             else if (curMoveDir == 4)
-                player.moveRight();
+                data.player.moveRight();
         }
     }
 
@@ -235,31 +207,31 @@ class MapScreen extends State {
         screen.clear(0);
 
         // center camera on player 
-        camera.xPos = player.tileObj.xCoord - 7;
-        camera.yPos = player.tileObj.yCoord - 5;
+        data.camera.xPos = data.player.tileObj.xCoord - 7;
+        data.camera.yPos = data.player.tileObj.yCoord - 5;
 
-        tileMap.draw(camera, screen);
+        data.tileMap.draw(data.camera, screen);
 
         // status line
         screen.setTextColor(3);
         screen.setTextPosition(2, 168);
-        screen.print(statusMsg);
+        screen.print(data.statusMsg);
 
         // player exp
         // FIXME: probably no need for floats here, but eh... 
-        float width = 219.0 * player.experience.getRatio();
+        float width = 219.0 * data.player.experience.getRatio();
         screen.drawRect(0, 161, 219, 2, 1, true);
         screen.drawHLine(1, 162, (int) width, 3);
 
         // player hp
         screen.drawRect(0, 163, 109, 3, 11, true);
-        width = 109.0 * player.hitPoints.getRatio();
+        width = 109.0 * data.player.hitPoints.getRatio();
         screen.drawHLine(1, 164, (int) width, 9);
         screen.drawHLine(1, 165, (int) width, 9);
 
         // player mp/stamina
         screen.drawRect(110, 163, 109, 3, 13, true);
-        width = 109.0 * player.manaPoints.getRatio();
+        width = 109.0 * data.player.manaPoints.getRatio();
         screen.drawHLine(111, 164, (int) width, 12);
         screen.drawHLine(111, 165, (int) width, 12);
 

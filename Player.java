@@ -1,9 +1,6 @@
-class Player extends Enemy {
+ class Player extends Enemy {
     public Attribute experience;
     public Attribute manaPoints;
-    public Attribute hitPoints;
-    public Attribute attackRating;
-    public Attribute defenseRating;
     
     /*
     public Attribute strength;
@@ -42,6 +39,21 @@ class Player extends Enemy {
         experience.increase(addVal);
         return false;
     }
+    
+    public boolean applyHealthPotion() {
+        int min = hitPoints.maxValue / 4;
+        int max = hitPoints.maxValue / 3;
+        hitPoints.increase((byte) Math.random(min, max));
+        return true;  // maybe the player could be blocke d from using potions..?
+    }
+    
+    public boolean applyManaPotion() {
+        int min = manaPoints.maxValue / 4;
+        int max = manaPoints.maxValue / 3;
+        manaPoints.increase((byte) Math.random(min, max));
+        return true;
+    }
+    
     /*
     public String getStats() {
         return "    HP" + hitPoints.getStatLine(6) 
