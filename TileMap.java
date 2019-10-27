@@ -10,12 +10,33 @@ class TileMap {
     private static final ImgWall imgWall = new ImgWall();
     private static final ImgGround imgGround = new ImgGround();
     private static final ImgGround2 imgGround2 = new ImgGround2();
-    private static final ImgTyger imgPlayer = new ImgTyger();
     private static final ImgChest imgChest = new ImgChest();
     private static final ImgDoor imgDoor = new ImgDoor();
-    private static final ImgEnemy imgEnemy = new ImgEnemy();
     private static final ImgHealthPotion imgHpPot = new ImgHealthPotion();
     private static final ImgManaPotion imgMpPot = new ImgManaPotion();
+    private static final ImgStairs imgStairs = new ImgStairs();
+    
+    // players
+    private static final ImgPlayer1 imgPlayer = new ImgPlayer1();
+    
+    // enemies
+    private static final ImgSkelli1 imgSkelli1 = new ImgSkelli1();
+    private static final ImgSkelli2 imgSkelli2 = new ImgSkelli2();
+    private static final ImgSkelli3 imgSkelli3 = new ImgSkelli3();
+    private static final ImgSkelli4 imgSkelli4 = new ImgSkelli4();
+    private static final ImgSkelli5 imgSkelli5 = new ImgSkelli5();
+    private static final ImgSkelli6 imgSkelli6 = new ImgSkelli6();
+    private static final ImgSkelli7 imgSkelli7 = new ImgSkelli7();
+    
+    private static final ImgZombie1 imgZombie1 = new ImgZombie1();
+    private static final ImgZombie2 imgZombie2 = new ImgZombie2();
+    
+    private static final ImgDemon1 imgDemon1 = new ImgDemon1();
+    private static final ImgDemon2 imgDemon2 = new ImgDemon2();
+    
+    
+    private static final ImgTygro imgTygro = new ImgTygro();
+    
 
     boolean[] terrainData;
     TileObject firstObj;
@@ -74,10 +95,23 @@ class TileMap {
     // enemy management... a fancy linkedlist class would be nicer...
     public void addEnemy(byte enemyType, byte xCoord, byte yCoord) {
         switch (enemyType) {
+            case 2: // ZOMBEEEHS
+                addEnemy(new Enemy(2, 20, 2, 2), (byte) Math.random(18, 20), xCoord, yCoord);
+                break;
+            
+            case 3: // DEMONS!!!
+                addEnemy(new Enemy(3, 30, 5, 5), (byte) Math.random(20,  22), xCoord, yCoord);
+                break;
+            
+            case 4: // TYGRO!!!
+                addEnemy(new Enemy(4, 200, 30, 50), 100, xCoord, yCoord);
+                break;
+            
             case 1:
             default:
-                addEnemy(new Enemy(1, 10, 1, 2), 3, xCoord, yCoord);
+                addEnemy(new Enemy(1, 10, 1, 1), (byte) Math.random(10, 17), xCoord, yCoord);
                 break;
+            
         }
     }
 
@@ -156,7 +190,7 @@ class TileMap {
                         imgDoor.draw(screen, x, y);
                         break;
                     case 3:
-                        imgEnemy.draw(screen, x, y);
+                        imgSkelli1.draw(screen, x, y);
                         break;
                     case 4:
                         imgHpPot.draw(screen, x, y);
@@ -164,8 +198,56 @@ class TileMap {
                     case 5: 
                         imgMpPot.draw(screen, x, y);
                         break;
-                    default:
+                    case 6:
+                        imgStairs.draw(screen, x, y);
                         break;
+                        
+                    case 10:
+                        imgSkelli1.draw(screen, x, y);
+                        break;
+                    case 11:
+                        imgSkelli2.draw(screen, x, y);
+                        break;
+                    case 12:
+                        imgSkelli3.draw(screen, x, y);
+                        break;
+                    case 13:
+                        imgSkelli4.draw(screen, x, y);
+                        break;
+                    case 14:
+                        imgSkelli5.draw(screen, x, y);
+                        break;
+                    case 15:
+                        imgSkelli6.draw(screen, x, y);
+                        break;
+                    case 17:
+                        imgSkelli7.draw(screen, x, y);
+                        break;
+
+                    case 18:
+                        imgZombie1.draw(screen, x, y);
+                        break;
+                    case 19:
+                        imgZombie2.draw(screen, x, y);
+                        break;
+                        
+                    case 20:
+                        imgDemon1.draw(screen, x, y);
+                        break;
+                    case 21:
+                        imgDemon2.draw(screen, x, y);
+                        break;
+                        
+                    case 100:
+                        // Tygro is a bit bigger, so drawing may be more comlicated..
+                        imgTygro.draw(screen, x, y);
+                        break;
+
+                        
+                    default:
+                        break;  
+                    
+                    // stupid code.. how did this happen? o__O
                 }
 
             }

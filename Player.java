@@ -17,8 +17,8 @@
         hitPoints = new Attribute(20, 20);
         manaPoints = new Attribute(20, 20);
         
-        attackRating = new Attribute(5, 5);
-        defenseRating = new Attribute(5, 5);
+        attackRating = new Attribute(20, 20);
+        defenseRating = new Attribute(10, 10);
         
         /*
         strength = new Attribute(2, 2);

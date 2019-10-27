@@ -27,13 +27,13 @@ class MapScreen extends State {
             int maxDamage = player.attackRating.curValue - enemy.defenseRating.curValue;
             if (maxDamage < 1) maxDamage = 1;
             // roll damage between 1 and maxDamage
-            enemy.hitPoints.increase(-maxDamage);
+            enemy.hitPoints.increase(-(Math.random(1, maxDamage + 1)));
             return enemy.isDead();
         } else {
             int maxDamage = enemy.attackRating.curValue - player.defenseRating.curValue;
             if (maxDamage < 1) maxDamage = 1;
             // roll damage between 1 and maxDamage
-            player.hitPoints.increase(-maxDamage);
+            player.hitPoints.increase(-(Math.random(1, maxDamage + 1)));
             return player.isDead();
         }
 
@@ -77,6 +77,9 @@ class MapScreen extends State {
                         data.statusMsg = Messages.door;
                         break;
                     case 3: 
+                    case 10: case 11: case 12: case 13: case 14: case 15: 
+                    case 16: case 17: case 18: case 19: case 20: case 21:
+                    case 100:
                         // ENEMY
                         if (attack(data.player, (Enemy) obj.data, true)) {
                             data.statusMsg = Messages.enemyDead;

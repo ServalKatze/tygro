@@ -61,7 +61,17 @@ public class GameData {
         // add enemy - skeleton
         tileMap.addEnemy(1, 6, 6);
         for (int i = 0; i < 2; i++) {
-            tileMap.addEnemy(1, 7 + i, 6);
+            tileMap.addEnemy(1, i + 7, 6);
+        }
+        
+        // add enemy - zombies
+        for (int i = 0; i < 2; i++) {
+            tileMap.addEnemy(2, i + 7, 7);
+        }
+        
+        // add enemy - demons
+        for (int i = 0; i < 2; i++) {
+            tileMap.addEnemy(3, i + 7, 8);
         }
         
         // add item - health potion
@@ -69,5 +79,7 @@ public class GameData {
             tileMap.addObject(new TileObject(4, 2 + i, 7));
         }
         
+        // add stairs down 
+        tileMap.addObject(new TileObject(6, 7, 7));
     }
 }

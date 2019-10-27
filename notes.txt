@@ -14,3 +14,7 @@ TileObjectTypes =
     
     4 HEALTH POTION
     5 MANA POTION
+    6 STAIRS DOWN
+    
+    ENEMIES 
+    10-16 SKELLI 1-7
