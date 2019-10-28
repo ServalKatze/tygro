@@ -164,7 +164,10 @@ class TileMap {
                         else
                             imgGround.draw(screen, x, y);
                 } else {
-                    if (getTile(col - 1, row) || getTile(col + 1, row) || getTile(col, row - 1) || getTile(col, row + 1) || getTile(col - 1, row - 1) || getTile(col + 1, row - 1) || getTile(col - 1, row + 1) || getTile(col + 1, row + 1)) {
+                    if (getTile(row - 1, col) || getTile(row + 1, col) || 
+                        getTile(row, col - 1) || getTile(row, col + 1) || 
+                        getTile(row - 1, col - 1) || getTile(row + 1, col - 1) || 
+                        getTile(row - 1, col + 1) || getTile(row + 1, col + 1)) {
 
                         imgWall.draw(screen, x, y); // TODO: only draw wall if one floor tile is near it
                     }

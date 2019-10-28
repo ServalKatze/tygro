@@ -19,6 +19,7 @@ class MapScreen extends State {
     public void init() {
         screen = new HiRes16Color(Pico8.palette(), Tight.font());
         data = GameData.getInstance();
+        //data.generateMap(1);
     }
 
     /// @return true if attacked entity is dead
@@ -78,8 +79,8 @@ class MapScreen extends State {
                         break;
                     case 3: 
                     case 10: case 11: case 12: case 13: case 14: case 15: 
-                    case 16: case 17: case 18: case 19: case 20: case 21:
-                    case 100:
+                    case 16: case 17: case 18: case 19: case 20: case 21: 
+                    case 100: case 101: case 102: case 103:  // TYGRO is HUUUUGE!!
                         // ENEMY
                         if (attack(data.player, (Enemy) obj.data, true)) {
                             data.statusMsg = Messages.enemyDead;
@@ -104,6 +105,10 @@ class MapScreen extends State {
                         data.tileMap.remObject(obj);
                         data.player.applyManaPotion();
                         data.statusMsg = Messages.potion;
+                        break;
+                    case 6:
+                        // STAIRS
+                        data.statusMsg = "Transwarp not yet implemented.";
                         break;
                     default:
                         data.statusMsg = Messages.blocked;

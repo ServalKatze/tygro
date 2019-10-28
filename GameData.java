@@ -22,10 +22,82 @@ public class GameData {
         tileMap = new TileMap(10, 10);
         camera = new Camera();
         statusMsg = Messages.greeting;
-        generateMap();
+        generateMap(1);
     }
     
-    // TODO map generator!
+    public void generateMap(int level) {
+        // TODO: level sets map size and enemy types+level
+        
+        byte tileMapHeight = 40;
+        byte tileMapWidth = 40;
+        tileMap = new TileMap(tileMapWidth, tileMapHeight);
+        
+        byte maxRoomWidth = 8;
+        byte maxRoomHeight = 5;
+        
+        byte gridWidth = tileMapWidth / (maxRoomWidth);
+        byte gridHeight = tileMapHeight / (maxRoomHeight);
+        
+        byte roomCenterX = maxRoomWidth / 2;
+        byte roomCenterY = maxRoomHeight / 2;
+        
+        boolean isPlayerPlaced = false;
+        //int maxEnemiesPerRoom = gridWidth * gridHeight;
+        
+        // draw rooms
+        for(byte row=0; row<gridHeight; row = row + 1) {
+            for(byte col=0; col<gridWidth; col = col + 1) {
+                
+                // random room size
+                byte roomWidth =  (byte) Math.random(2, maxRoomWidth);
+                byte roomHeight = (byte) Math.random(2, maxRoomHeight);
+                
+                byte startCol = 1 + col * (maxRoomWidth) + ((maxRoomWidth - roomWidth) / 2);
+                byte startRow = 1 + row * (maxRoomHeight) + ((maxRoomHeight - roomHeight) / 2);
+    
+                // set room tiles
+                for(byte roomRow=0; roomRow<roomHeight; roomRow = roomRow + 1) {
+                    for(byte roomCol=0; roomCol<roomWidth; roomCol = roomCol + 1) {
+                        tileMap.setTile((byte) startRow + roomRow, 
+                            (byte) startCol + roomCol, false);
+                    }
+                }
+                
+                // player starts in first room
+                if(!isPlayerPlaced) {
+                    player.setCoord((byte) startCol, (byte) startRow);
+                    tileMap.addObject(player.tileObj);
+                    isPlayerPlaced = true;
+                }
+                
+                // TODO: place some enemies within room?
+            }
+        }
+        
+        // draw connecting corridor grid
+        // horizontal lines
+        for(int row=roomCenterY; row<tileMapHeight - 1; row += maxRoomHeight) {
+            for(int col=1; col<tileMapWidth - 1; col += 1) {
+                tileMap.setTile((byte) row, (byte) col, false);
+            }
+        }
+        
+        // vertical lines
+        for(int col=roomCenterX; col<tileMapWidth -1; col += maxRoomWidth) {
+            for(int row=1; row<tileMapHeight -1; row += 1) {
+                tileMap.setTile((byte) row, (byte) col, false);
+            }
+        }
+        
+        // TODO: place doors on every "junction" 
+        // A) ... B) #o#  C) #.  D) .#
+        //    #o#    ...     o.     .o
+        //                   #.     .#
+        // Hint: These can only occur on the horizontal/vertical lines
+        
+    }
+    
+    // Testmap
     public void generateMap() {
         
         byte width = 40;
