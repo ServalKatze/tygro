@@ -6,6 +6,7 @@ class TileMap {
     byte width;
     byte height;
     int mapSize;
+    int enemyCount;
 
     private static final ImgWall imgWall = new ImgWall();
     private static final ImgGround imgGround = new ImgGround();
@@ -17,7 +18,9 @@ class TileMap {
     private static final ImgStairs imgStairs = new ImgStairs();
     
     // players
-    private static final ImgPlayer1 imgPlayer = new ImgPlayer1();
+    public static final ImgPlayer1 imgPlayer = new ImgPlayer1();
+    public static final ImgPlayer2 imgPlayer2 = new ImgPlayer2();
+    public static final ImgPlayer3 imgPlayer3 = new ImgPlayer3();
     
     // enemies
     private static final ImgSkelli1 imgSkelli1 = new ImgSkelli1();
@@ -43,6 +46,7 @@ class TileMap {
     public TileMap(byte width, byte height) {
         this.width = width;
         this.height = height;
+        this.enemyCount = 0;
         mapSize = width * height;
         terrainData = new boolean[mapSize];
         for (int i = 0; i < mapSize; i++) {
@@ -53,7 +57,10 @@ class TileMap {
     }
 
     // object management... 
-    public void addObject(TileObject obj) {
+    public boolean addObject(TileObject obj) {
+        if(isBlocking(obj.yCoord, obj.xCoord))
+            return false;
+        
         if (firstObj == null) {
             firstObj = obj;
         } else {
@@ -61,9 +68,14 @@ class TileMap {
             firstObj.prev = obj;
             firstObj = obj;
         }
+        
+        return true;
     }
 
     public void remObject(TileObject obj) {
+
+        if(obj.isEnemy())
+            enemyCount--;
 
         if (obj.prev != null) {
             obj.prev.next = obj.next;
@@ -117,7 +129,8 @@ class TileMap {
 
     public void addEnemy(Enemy enemy, byte tileType, byte xCoord, byte yCoord) {
         TileObject to = new TileObject(tileType, xCoord, yCoord, enemy);
-        addObject(to);
+        if(addObject(to))
+            enemyCount++;
     }
 
     // tile management...

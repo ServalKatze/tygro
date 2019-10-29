@@ -37,10 +37,14 @@ class Main extends State {
         screen.setTextColor(5);
         screen.setTextPosition(95, 55);
         screen.print(Messages.title);
+        
+        GameData.getInstance().tileMap.imgPlayer.draw(screen, 79, 70);
+        GameData.getInstance().tileMap.imgPlayer2.draw(screen, 104, 70);
+        GameData.getInstance().tileMap.imgPlayer3.draw(screen, 129, 70);
 
         screen.setTextColor(3);
         screen.setTextPosition(0, 0);
-        screen.print(java.lang.Runtime.getRuntime().freeMemory());
+        //screen.print(java.lang.Runtime.getRuntime().freeMemory());
 
         // Update the screen with everything that was drawn
         screen.flush();

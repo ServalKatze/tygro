@@ -85,6 +85,10 @@ class MapScreen extends State {
                         if (attack(data.player, (Enemy) obj.data, true)) {
                             data.statusMsg = Messages.enemyDead;
                             data.tileMap.remObject(obj);
+                            data.enemyMsg = data.tileMap.enemyCount + " enemies";
+                            if(data.tileMap.enemyCount <= 0) {
+                                data.tileMap.addObject(new TileObject(6, xCoord, yCoord));
+                            }
                             
                             if(data.player.addExperience(obj.data.level*10)) {
                                 data.statusMsg = "Levelup! You are now level " + (int) data.player.level + "!";
@@ -108,7 +112,9 @@ class MapScreen extends State {
                         break;
                     case 6:
                         // STAIRS
-                        data.statusMsg = "Transwarp not yet implemented.";
+                        data.statusMsg = "Translocating to next level..";
+                        data.level = data.level + 1;
+                        data.generateMap();
                         break;
                     default:
                         data.statusMsg = Messages.blocked;
@@ -248,8 +254,10 @@ class MapScreen extends State {
         screen.drawHLine(111, 165, (int) width, 12);
 
         screen.setTextPosition(0, 0);
+        screen.print(data.enemyMsg);
+        
+        screen.setTextPosition(0, 10);
         screen.print(java.lang.Runtime.getRuntime().freeMemory());
-        //screen.print(screen.fps();
 
         screen.flush();
     }

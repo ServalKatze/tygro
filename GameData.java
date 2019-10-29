@@ -4,6 +4,8 @@ public class GameData {
     public TileMap tileMap;
     public Camera camera;
     public String statusMsg;
+    public String enemyMsg;
+    public int level;
     
     private static GameData instance;
     
@@ -22,18 +24,20 @@ public class GameData {
         tileMap = new TileMap(10, 10);
         camera = new Camera();
         statusMsg = Messages.greeting;
-        generateMap(1);
+        level = 0;
+        generateMap();
+        enemyMsg = tileMap.enemyCount + " enemies";
     }
     
-    public void generateMap(int level) {
+    public void generateMap() {
         // TODO: level sets map size and enemy types+level
         
-        byte tileMapHeight = 40;
-        byte tileMapWidth = 40;
-        tileMap = new TileMap(tileMapWidth, tileMapHeight);
+        // parameters level 1
+        byte tileMapHeight = 10;
+        byte tileMapWidth = 10;
         
-        byte maxRoomWidth = 8;
-        byte maxRoomHeight = 5;
+        byte maxRoomWidth = 4;
+        byte maxRoomHeight = 4;
         
         byte gridWidth = tileMapWidth / (maxRoomWidth);
         byte gridHeight = tileMapHeight / (maxRoomHeight);
@@ -42,7 +46,27 @@ public class GameData {
         byte roomCenterY = maxRoomHeight / 2;
         
         boolean isPlayerPlaced = false;
-        //int maxEnemiesPerRoom = gridWidth * gridHeight;
+        byte maxEnemies = 50;
+        byte numEnemies = 0;
+        byte maxEnemyType = 2;
+        
+        if(level >= 2) {
+            tileMapHeight = 20;
+            tileMapWidth = 10;
+            maxEnemyType = 3;
+            maxRoomWidth = 8;
+        } else if (level >= 3) {
+            tileMapHeight = 10;
+            tileMapWidth = 20;
+            maxEnemyType = 4;
+            maxRoomWidth = 8;
+            maxRoomHeight= 5;
+        } else if (level >= 10) {
+            // Tygro level
+            maxEnemyType = 4;
+        }
+        
+        tileMap = new TileMap(tileMapWidth, tileMapHeight);
         
         // draw rooms
         for(byte row=0; row<gridHeight; row = row + 1) {
@@ -55,11 +79,21 @@ public class GameData {
                 byte startCol = 1 + col * (maxRoomWidth) + ((maxRoomWidth - roomWidth) / 2);
                 byte startRow = 1 + row * (maxRoomHeight) + ((maxRoomHeight - roomHeight) / 2);
     
+                byte enemiesInRoom = 0;
+                
                 // set room tiles
                 for(byte roomRow=0; roomRow<roomHeight; roomRow = roomRow + 1) {
                     for(byte roomCol=0; roomCol<roomWidth; roomCol = roomCol + 1) {
                         tileMap.setTile((byte) startRow + roomRow, 
                             (byte) startCol + roomCol, false);
+                    
+                        if(isPlayerPlaced && numEnemies < maxEnemies && (enemiesInRoom <= 1 || Math.random(1, enemiesInRoom) == 0)) {
+                            // TODO: place some enemies within room
+                            numEnemies = numEnemies + 1; 
+                            enemiesInRoom = enemiesInRoom + 1;
+                            tileMap.addEnemy(Math.random(1, maxEnemyType), (byte) startCol + roomCol, (byte) startRow + roomRow);
+                        }
+                        
                     }
                 }
                 
@@ -70,7 +104,6 @@ public class GameData {
                     isPlayerPlaced = true;
                 }
                 
-                // TODO: place some enemies within room?
             }
         }
         
@@ -96,7 +129,7 @@ public class GameData {
         // Hint: These can only occur on the horizontal/vertical lines
         
     }
-    
+    /*
     // Testmap
     public void generateMap() {
         
@@ -154,4 +187,5 @@ public class GameData {
         // add stairs down 
         tileMap.addObject(new TileObject(6, 7, 7));
     }
+    */
 }
