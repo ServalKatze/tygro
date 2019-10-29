@@ -8,6 +8,7 @@ import femto.font.Tight;
 
 class Main extends State {
     HiRes16Color screen;
+    byte charSel;
 
     // start the game with an initial state
     public static void main(String[] args) {
@@ -18,6 +19,7 @@ class Main extends State {
     // Allocate on init instead.
     void init() {
         screen = new HiRes16Color(Pico8.palette(), Tight.font());
+        charSel = 0;
     }
 
     // Might help in certain situations
@@ -31,7 +33,14 @@ class Main extends State {
 
         // Change to a new state when A is pressed
         if (Button.A.justPressed()) {
+            GameData.getInstance().charSel = charSel;
             Game.changeState(new MapScreen());
+        } else if (Button.Left.justPressed()) {
+            charSel = charSel - 1;
+            if(charSel < 0) charSel = 2;
+        } else if(Button.Right.justPressed()) {
+            charSel = charSel + 1;
+            if(charSel > 2) charSel = 0;
         }
 
         screen.setTextColor(5);
@@ -42,6 +51,8 @@ class Main extends State {
         GameData.getInstance().tileMap.imgPlayer2.draw(screen, 104, 70);
         GameData.getInstance().tileMap.imgPlayer3.draw(screen, 129, 70);
 
+        screen.drawRect(76 + charSel * 25, 68, 20, 20, 3, true);
+        
         screen.setTextColor(3);
         screen.setTextPosition(0, 0);
         //screen.print(java.lang.Runtime.getRuntime().freeMemory());

@@ -197,7 +197,12 @@ class TileMap {
                 int y = (obj.yCoord - camera.yPos) * 16;
                 switch (obj.type) {
                     case 0:
-                        imgPlayer.draw(screen, x, y);
+                        if(GameData.getInstance().charSel == 0)
+                            imgPlayer.draw(screen, x, y);
+                        else if(GameData.getInstance().charSel == 1)
+                            imgPlayer2.draw(screen, x, y);
+                        else 
+                            imgPlayer3.draw(screen, x, y);
                         break;
                     case 1:
                         imgChest.draw(screen, x, y);

@@ -6,6 +6,7 @@ public class GameData {
     public String statusMsg;
     public String enemyMsg;
     public int level;
+    public byte charSel;
     
     private static GameData instance;
     
@@ -25,6 +26,7 @@ public class GameData {
         camera = new Camera();
         statusMsg = Messages.greeting;
         level = 0;
+        GameData.instance.charSel = 0;
         generateMap();
         enemyMsg = tileMap.enemyCount + " enemies";
     }
