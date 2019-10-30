@@ -10,10 +10,12 @@ class MapScreen extends State {
     byte curMoveDir;
     byte moveTimer;
     GameData data;
+    byte tygroTicker;
 
     public void preinit() {
         curMoveDir = 0;
         moveTimer = 0;
+        tygroTicker = 10;
     }
 
     public void init() {
@@ -178,6 +180,16 @@ class MapScreen extends State {
                                     !data.tileMap.isBlocking(newY, obj.xCoord) && 
                                     !data.tileMap.isBlocking(newY, obj.xCoord + 1)) {
                             moveDir = yDiff > 0 ? 1 : 2;
+                        }
+                        tygroTicker = tygroTicker + 1;
+                        if(tygroTicker > 10 && data.tileMap.enemyCount < 10) {
+                            for(int i=0; i<10 && data.tileMap.enemyCount < 10; i++) {
+                                if(!data.tileMap.isBlocking(1, i))
+                                    data.tileMap.addEnemy(Math.random(1, 4), i, 1);
+                            }
+
+                            tygroTicker = 0;
+                            data.statusMsg = "Tygro summons new minions!";
                         }
 
                     } else {

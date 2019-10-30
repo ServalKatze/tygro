@@ -49,6 +49,7 @@ class TileMap {
         this.height = height;
         this.enemyCount = 0;
         this.tygro = null;
+        
         mapSize = width * height;
         terrainData = new boolean[mapSize];
         for (int i = 0; i < mapSize; i++) {
@@ -158,8 +159,9 @@ class TileMap {
 
     public void addEnemy(Enemy enemy, byte tileType, byte xCoord, byte yCoord) {
         TileObject to = new TileObject(tileType, xCoord, yCoord, enemy);
-        if(tileType == 100)
+        if(tileType == 100) {
             tygro = to;
+        }
         if(addObject(to))
             enemyCount++;
     }
