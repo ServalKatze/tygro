@@ -184,12 +184,13 @@ class MapScreen extends State {
                         tygroTicker = tygroTicker + 1;
                         if(tygroTicker > 10 && data.tileMap.enemyCount < 10) {
                             for(int i=0; i<10 && data.tileMap.enemyCount < 10; i++) {
-                                if(!data.tileMap.isBlocking(1, i))
-                                    data.tileMap.addEnemy(Math.random(1, 4), i, 1);
+                                if(!data.tileMap.isBlocking(0, i))
+                                    data.tileMap.addEnemy(Math.random(1, 4), i, 0);
                             }
 
                             tygroTicker = 0;
                             data.statusMsg = "Tygro summons new minions!";
+                            data.enemyMsg = data.tileMap.enemyCount + " enemies";
                         }
 
                     } else {
@@ -306,8 +307,8 @@ class MapScreen extends State {
         screen.setTextPosition(0, 0);
         screen.print(data.enemyMsg);
         
-        //screen.setTextPosition(0, 10);
-        //screen.print(java.lang.Runtime.getRuntime().freeMemory());
+        screen.setTextPosition(0, 10);
+        screen.print(java.lang.Runtime.getRuntime().freeMemory());
 
         screen.flush();
     }

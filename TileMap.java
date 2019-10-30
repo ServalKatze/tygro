@@ -6,6 +6,7 @@ class TileMap {
     byte width;
     byte height;
     int mapSize;
+    int maxMapSize;
     public int enemyCount;
     public TileObject tygro;
 
@@ -51,8 +52,10 @@ class TileMap {
         this.tygro = null;
         
         mapSize = width * height;
-        terrainData = new boolean[mapSize];
-        for (int i = 0; i < mapSize; i++) {
+        
+        maxMapSize = 20 * 20;
+        terrainData = new boolean[maxMapSize];
+        for (int i = 0; i < maxMapSize; i++) {
             terrainData[i] = false;
         }
 
@@ -68,8 +71,7 @@ class TileMap {
         this.height = height;
         this.enemyCount = 0;
         mapSize = width * height;
-        terrainData = new boolean[mapSize];
-        for (int i = 0; i < mapSize; i++) {
+        for (int i = 0; i < maxMapSize; i++) {
             terrainData[i] = false;
         }
     }

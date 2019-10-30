@@ -38,7 +38,7 @@ public class GameData {
     
     public void generateMap() {
         // TODO: level sets map size and enemy types+level
-        if(level == 1) {
+        if(level == 5) {
             generateFinalMap();
             return;
         }
