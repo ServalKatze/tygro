@@ -64,6 +64,7 @@ class MapScreen extends State {
             }
 
             TileObject obj = data.tileMap.getObject(yCoord, xCoord);
+            
             if (obj != null) {
                 switch (obj.type) {
                     case 1:
@@ -80,14 +81,19 @@ class MapScreen extends State {
                     case 3: 
                     case 10: case 11: case 12: case 13: case 14: case 15: 
                     case 16: case 17: case 18: case 19: case 20: case 21: 
-                    case 100: case 101: case 102: case 103:  // TYGRO is HUUUUGE!!
+                    case 100:  // TYGRO is HUUUUGE!!
                         // ENEMY
                         if (attack(data.player, (Enemy) obj.data, true)) {
                             data.statusMsg = Messages.enemyDead;
                             data.tileMap.remObject(obj);
                             data.enemyMsg = data.tileMap.enemyCount + " enemies";
+                            if(obj.type >= 100) {
+                                data.statusMsg = "The mighty Tygro has been slain!";
+                            }
                             if(data.tileMap.enemyCount <= 0) {
                                 data.tileMap.addObject(new TileObject(6, xCoord, yCoord));
+                            } else if(Math.random(1, 5) == 2) {
+                                data.tileMap.addObject(new TileObject(4, xCoord, yCoord));
                             }
                             
                             if(data.player.addExperience(obj.data.level*10)) {
@@ -111,10 +117,14 @@ class MapScreen extends State {
                         data.statusMsg = Messages.potion;
                         break;
                     case 6:
-                        // STAIRS
-                        data.statusMsg = "Translocating to next level..";
-                        data.level = data.level + 1;
-                        data.generateMap();
+                        // STAIRS/PORTALS
+                        if(data.isFinalLevel) {
+                            Game.changeState(new EndScreen());
+                        } else {
+                            data.statusMsg = "Translocating to next level..";
+                            data.level = data.level + 1;
+                            data.generateMap();
+                        }
                         break;
                     default:
                         data.statusMsg = Messages.blocked;
@@ -135,6 +145,7 @@ class MapScreen extends State {
             // otherwise move a non-blocking tile closer to player 
 
             obj = data.tileMap.firstObj;
+            
             while (obj != null) {
                 if (obj.isEnemy() && obj.isOnScreen(data.camera)) {
                     byte xDiff = obj.xCoord - data.player.tileObj.xCoord;
@@ -143,25 +154,52 @@ class MapScreen extends State {
                     byte newX = obj.xCoord + (xDiff > 0 ? -1 : 1);
                     byte newY = obj.yCoord + (yDiff > 0 ? -1 : 1);
 
-                    // TODO: xDiff=0 and yDiff = 1 -> next to player ==> attack
-                    if (xDiff == 0 && (yDiff == 1 || yDiff == -1) ||
-                        yDiff == 0 && (xDiff == 1 || xDiff == -1)) {
-                        if (attack(data.player, (Enemy) obj.data, false)) {
-                            // you're ded. 
-                            data.tileMap.remObject(data.player.tileObj);
+                    // xDiff=0 and yDiff = 1 -> next to player ==> attack
+                    if(obj == data.tileMap.tygro) {
+                        if(newX > obj.xCoord) newX = newX + 1;
+                        if(newY > obj.yCoord) newY = newY + 1;
+                        
+                        // attack 
+                        if (xDiff == 0 && (yDiff == -2 || yDiff == 1) ||
+                            yDiff == 0 && (xDiff == -2 || xDiff == 1) ||
+                            xDiff == -1 && (yDiff == -2 || yDiff == 1) ||
+                            yDiff == -1 && (xDiff == -2 || xDiff == 1)
+                            
+                            ) {
+                            if (attack(data.player, (Enemy) obj.data, false)) {
+                                // you're ded. 
+                                data.tileMap.remObject(data.player.tileObj);
+                            }
+                        }  else if (xDiff != 0 && 
+                                    !data.tileMap.isBlocking(obj.yCoord, newX) && 
+                                    !data.tileMap.isBlocking(obj.yCoord + 1, newX)) {
+                            moveDir = xDiff > 0 ? 3 : 4;
+                        } else if (yDiff != 0 && 
+                                    !data.tileMap.isBlocking(newY, obj.xCoord) && 
+                                    !data.tileMap.isBlocking(newY, obj.xCoord + 1)) {
+                            moveDir = yDiff > 0 ? 1 : 2;
                         }
-                    } else if (xDiff != 0 && !data.tileMap.isBlocking(obj.yCoord, newX)) {
-                        moveDir = xDiff > 0 ? 3 : 4;
-                    } else if (yDiff != 0 && !data.tileMap.isBlocking(newY, obj.xCoord)) {
-                        moveDir = yDiff > 0 ? 1 : 2;
-                    } else if (moveDir == 0) {
-                        newX = obj.xCoord + (xDiff < 0 ? -1 : 1);
-                        newY = obj.yCoord + (yDiff < 0 ? -1 : 1);
 
-                        if (!data.tileMap.isBlocking(obj.yCoord, newX)) {
-                            moveDir = xDiff < 0 ? 3 : 4;
-                        } else if (!data.tileMap.isBlocking(newY, obj.xCoord)) {
-                            moveDir = yDiff < 0 ? 1 : 2;
+                    } else {
+                        if (xDiff == 0 && (yDiff == 1 || yDiff == -1) ||
+                            yDiff == 0 && (xDiff == 1 || xDiff == -1)) {
+                            if (attack(data.player, (Enemy) obj.data, false)) {
+                                // you're ded. 
+                                data.tileMap.remObject(data.player.tileObj);
+                            }
+                        } else if (xDiff != 0 && !data.tileMap.isBlocking(obj.yCoord, newX)) {
+                            moveDir = xDiff > 0 ? 3 : 4;
+                        } else if (yDiff != 0 && !data.tileMap.isBlocking(newY, obj.xCoord)) {
+                            moveDir = (yDiff > 0) ? 1 : 2;
+                        } else if (moveDir == 0) {
+                            newX = obj.xCoord + (xDiff < 0 ? -1 : 1);
+                            newY = obj.yCoord + (yDiff < 0 ? -1 : 1);
+    
+                            if (!data.tileMap.isBlocking(obj.yCoord, newX)) {
+                                moveDir = xDiff < 0 ? 3 : 4;
+                            } else if (!data.tileMap.isBlocking(newY, obj.xCoord)) {
+                                moveDir = yDiff < 0 ? 1 : 2;
+                            }
                         }
                     }
 
@@ -256,8 +294,8 @@ class MapScreen extends State {
         screen.setTextPosition(0, 0);
         screen.print(data.enemyMsg);
         
-        screen.setTextPosition(0, 10);
-        screen.print(java.lang.Runtime.getRuntime().freeMemory());
+        //screen.setTextPosition(0, 10);
+        //screen.print(java.lang.Runtime.getRuntime().freeMemory());
 
         screen.flush();
     }

@@ -6,7 +6,8 @@ class TileMap {
     byte width;
     byte height;
     int mapSize;
-    int enemyCount;
+    public int enemyCount;
+    public TileObject tygro;
 
     private static final ImgWall imgWall = new ImgWall();
     private static final ImgGround imgGround = new ImgGround();
@@ -47,6 +48,7 @@ class TileMap {
         this.width = width;
         this.height = height;
         this.enemyCount = 0;
+        this.tygro = null;
         mapSize = width * height;
         terrainData = new boolean[mapSize];
         for (int i = 0; i < mapSize; i++) {
@@ -54,6 +56,21 @@ class TileMap {
         }
 
         firstObj = null;
+    }
+    
+    public void reinit(byte width, byte height) {
+        while(firstObj != null) {
+            remObject(firstObj);
+        }
+        this.tygro = null;
+        this.width = width;
+        this.height = height;
+        this.enemyCount = 0;
+        mapSize = width * height;
+        terrainData = new boolean[mapSize];
+        for (int i = 0; i < mapSize; i++) {
+            terrainData[i] = false;
+        }
     }
 
     // object management... 
@@ -74,6 +91,9 @@ class TileMap {
 
     public void remObject(TileObject obj) {
 
+        if(obj == tygro)
+            tygro = null;
+        
         if(obj.isEnemy())
             enemyCount--;
 
@@ -101,6 +121,15 @@ class TileMap {
                 return obj;
             obj = obj.next;
         }
+        
+        if(tygro != null) {
+            if ((tygro.xCoord == col-1 && tygro.yCoord == row) ||
+                (tygro.xCoord == col && tygro.yCoord == row-1) ||
+                (tygro.xCoord == col-1 && tygro.yCoord == row-1)
+                )
+                return tygro;
+        }
+
         return null;
     }
 
@@ -129,6 +158,8 @@ class TileMap {
 
     public void addEnemy(Enemy enemy, byte tileType, byte xCoord, byte yCoord) {
         TileObject to = new TileObject(tileType, xCoord, yCoord, enemy);
+        if(tileType == 100)
+            tygro = to;
         if(addObject(to))
             enemyCount++;
     }
@@ -241,7 +272,7 @@ class TileMap {
                     case 15:
                         imgSkelli6.draw(screen, x, y);
                         break;
-                    case 17:
+                    case 16:
                         imgSkelli7.draw(screen, x, y);
                         break;
 

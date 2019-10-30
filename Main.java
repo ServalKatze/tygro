@@ -33,6 +33,7 @@ class Main extends State {
 
         // Change to a new state when A is pressed
         if (Button.A.justPressed()) {
+            GameData.getInstance().init();
             GameData.getInstance().charSel = charSel;
             Game.changeState(new MapScreen());
         } else if (Button.Left.justPressed()) {
@@ -53,8 +54,8 @@ class Main extends State {
 
         screen.drawRect(76 + charSel * 25, 68, 20, 20, 3, true);
         
-        screen.setTextColor(3);
-        screen.setTextPosition(0, 0);
+        //screen.setTextColor(3);
+        //screen.setTextPosition(0, 0);
         //screen.print(java.lang.Runtime.getRuntime().freeMemory());
 
         // Update the screen with everything that was drawn

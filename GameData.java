@@ -7,6 +7,7 @@ public class GameData {
     public String enemyMsg;
     public int level;
     public byte charSel;
+    public boolean isFinalLevel;
     
     private static GameData instance;
     
@@ -21,18 +22,26 @@ public class GameData {
     }
     
     public void init() {
+        isFinalLevel = false;
         player = new Player();
-        tileMap = new TileMap(10, 10);
+        if(tileMap == null)
+            tileMap = new TileMap(10, 10);
+        else 
+            tileMap.reinit(10, 10);
         camera = new Camera();
         statusMsg = Messages.greeting;
         level = 0;
-        GameData.instance.charSel = 0;
+        charSel = 0;
         generateMap();
         enemyMsg = tileMap.enemyCount + " enemies";
     }
     
     public void generateMap() {
         // TODO: level sets map size and enemy types+level
+        if(level == 1) {
+            generateFinalMap();
+            return;
+        }
         
         // parameters level 1
         byte tileMapHeight = 10;
@@ -52,23 +61,27 @@ public class GameData {
         byte numEnemies = 0;
         byte maxEnemyType = 2;
         
-        if(level >= 2) {
+        if(level == 1) {
             tileMapHeight = 20;
             tileMapWidth = 10;
             maxEnemyType = 3;
             maxRoomWidth = 8;
-        } else if (level >= 3) {
-            tileMapHeight = 10;
+        } else if (level == 2) {
+            tileMapHeight = 20;
             tileMapWidth = 20;
             maxEnemyType = 4;
             maxRoomWidth = 8;
             maxRoomHeight= 5;
-        } else if (level >= 10) {
-            // Tygro level
+        } else if (level > 2) {
+            // TODO: Tygro level
             maxEnemyType = 4;
+            tileMapHeight = 20;
+            tileMapWidth = 20;
+            maxRoomWidth = 8;
+            maxRoomHeight= 5;
         }
         
-        tileMap = new TileMap(tileMapWidth, tileMapHeight);
+        tileMap.reinit(tileMapWidth, tileMapHeight);
         
         // draw rooms
         for(byte row=0; row<gridHeight; row = row + 1) {
@@ -109,6 +122,8 @@ public class GameData {
             }
         }
         
+        enemyMsg = tileMap.enemyCount + " enemies";
+        
         // draw connecting corridor grid
         // horizontal lines
         for(int row=roomCenterY; row<tileMapHeight - 1; row += maxRoomHeight) {
@@ -129,8 +144,29 @@ public class GameData {
         //    #o#    ...     o.     .o
         //                   #.     .#
         // Hint: These can only occur on the horizontal/vertical lines
-        
     }
+    
+    public void generateFinalMap() {
+        byte roomSize = 10;
+        isFinalLevel = true;
+        
+        tileMap.reinit(roomSize + 1, roomSize + 1);
+        
+        // just one big room
+        for(int i = 0; i < roomSize; i++) {
+            for(int j=0; j < roomSize; j++) {
+                tileMap.setTile(j, i, false);
+            }
+        }
+        
+        // player starts on bottom center
+        player.setCoord(roomSize / 2, roomSize - 1);
+        tileMap.addObject(player.tileObj);
+        
+        // !!! T Y G R O !!!
+        tileMap.addEnemy(4, roomSize / 2 - 1, 1);
+    }
+    
     /*
     // Testmap
     public void generateMap() {
