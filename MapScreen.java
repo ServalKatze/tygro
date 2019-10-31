@@ -27,7 +27,7 @@ class MapScreen extends State {
     /// @return true if attacked entity is dead
     public boolean attack(Player player, Enemy enemy, boolean isPlayerAttack) {
         if (isPlayerAttack) {
-            int maxDamage = player.attackRating.curValue - enemy.defenseRating.curValue;
+            int maxDamage = (int) player.attackRating.curValue - enemy.defenseRating.curValue;
             if (maxDamage < 1) maxDamage = 1;
             // roll damage between 1 and maxDamage
             enemy.hitPoints.increase(-(Math.random(1, maxDamage + 1)));
@@ -83,7 +83,7 @@ class MapScreen extends State {
                     case 3: 
                     case 10: case 11: case 12: case 13: case 14: case 15: 
                     case 16: case 17: case 18: case 19: case 20: case 21: 
-                    case 100:  // TYGRO is HUUUUGE!!
+                    case 100: 
                         // ENEMY
                         if (attack(data.player, (Enemy) obj.data, true)) {
                             data.statusMsg = Messages.enemyDead;
@@ -183,9 +183,9 @@ class MapScreen extends State {
                         }
                         tygroTicker = tygroTicker + 1;
                         if(tygroTicker > 10 && data.tileMap.enemyCount < 10) {
-                            for(int i=0; i<10 && data.tileMap.enemyCount < 10; i++) {
-                                if(!data.tileMap.isBlocking(0, i))
-                                    data.tileMap.addEnemy(Math.random(1, 4), i, 0);
+                            for(int i=0; i<5 && data.tileMap.enemyCount < 5; i++) {
+                                if(!data.tileMap.isBlocking(0, i + 2))
+                                    data.tileMap.addEnemy(Math.random(1, 4), i + 2, 0);
                             }
 
                             tygroTicker = 0;
@@ -307,8 +307,8 @@ class MapScreen extends State {
         screen.setTextPosition(0, 0);
         screen.print(data.enemyMsg);
         
-        screen.setTextPosition(0, 10);
-        screen.print(java.lang.Runtime.getRuntime().freeMemory());
+        //screen.setTextPosition(0, 10);
+        //screen.print(java.lang.Runtime.getRuntime().freeMemory());
 
         screen.flush();
     }

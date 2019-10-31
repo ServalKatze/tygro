@@ -35,8 +35,16 @@
             level = level + 1;
             
             // increase attributes!
-            hitPoints.maxValue = hitPoints.maxValue + 10;
-            manaPoints.maxValue = manaPoints.maxValue+ 5;
+            if(hitPoints.maxValue + 10 > 128) {
+                hitPoints.maxValue = 127;
+            } else {
+                hitPoints.maxValue = hitPoints.maxValue + 10;
+            }
+            if(manaPoints.maxValue + 10 > 128) {
+                hitPoints.maxValue = 127;
+            } else {
+                manaPoints.maxValue = manaPoints.maxValue+ 5;
+            }
             
             // heal!
             hitPoints.curValue = hitPoints.maxValue;

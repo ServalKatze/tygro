@@ -148,7 +148,7 @@ class TileMap {
                 break;
             
             case 4: // TYGRO!!!
-                addEnemy(new Enemy(4, 200, 30, 50), 100, xCoord, yCoord);
+                addEnemy(new Enemy(4, 60, 30, 5), 100, xCoord, yCoord);
                 break;
             
             case 1:

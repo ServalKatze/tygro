@@ -1,4 +1,14 @@
 
+# Compo TODOs:
+
+- BALANCING
+- Doors on junctions
+- Chests = Score? EXP?
+- Show Level + XP on end screen?
+
+
+
+
 # these should be constants or something
 
 max map size        40x40 ->  1600 tiles

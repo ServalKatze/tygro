@@ -32,7 +32,7 @@ class Main extends State {
         screen.clear(0);
 
         // Change to a new state when A is pressed
-        if (Button.A.justPressed()) {
+        if (Button.A.justPressed() || Button.B.justPressed()) {
             GameData.getInstance().init();
             GameData.getInstance().charSel = charSel;
             Game.changeState(new MapScreen());

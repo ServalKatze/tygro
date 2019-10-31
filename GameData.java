@@ -165,6 +165,11 @@ public class GameData {
         
         // !!! T Y G R O !!!
         tileMap.addEnemy(4, roomSize / 2 - 1, 1);
+        
+        // Potions
+        tileMap.addObject(new TileObject(4, 0, roomSize - 1));
+        tileMap.addObject(new TileObject(4, roomSize - 1, roomSize - 1));
+
     }
     
     /*
